@@ -26,15 +26,18 @@ export default async function HomePage() {
       <ServiciosSection />
 
       {publicaciones.length > 0 && (
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
           <div className="max-w-7xl mx-auto">
             <ScrollReveal>
               <div className="flex items-end justify-between mb-10">
                 <div>
-                  <h2 className="text-3xl font-extrabold text-gray-900">Proyectos Recientes</h2>
-                  <p className="text-gray-500 mt-2">Conoce nuestros últimos trabajos</p>
+                  <span className="inline-block text-amber-500 text-xs font-semibold uppercase tracking-widest mb-2">
+                    Nuestro trabajo
+                  </span>
+                  <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Proyectos Recientes</h2>
+                  <p className="text-gray-500 mt-1.5 text-sm">Conoce nuestros últimos trabajos</p>
                 </div>
-                <Link href="/proyectos" className="text-amber-600 hover:text-amber-700 font-semibold text-sm hidden sm:block">
+                <Link href="/proyectos" className="text-amber-600 hover:text-amber-700 font-semibold text-sm hidden sm:block hover:underline underline-offset-2 transition-all">
                   Ver todos →
                 </Link>
               </div>
@@ -50,13 +53,20 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-amber-400">
-        <ScrollReveal className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">Construimos Infraestructuras para el Futuro</h2>
-          <p className="text-gray-800 mb-8 text-lg">
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gray-950 overflow-hidden">
+        {/* Ambient glow */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-75 bg-amber-400/8 rounded-full blur-3xl" />
+        </div>
+        <ScrollReveal className="relative max-w-3xl mx-auto text-center">
+          <span className="inline-block text-amber-400 text-xs font-semibold uppercase tracking-widest mb-4">
+            Trabajemos juntos
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 tracking-tight">Construimos Infraestructuras para el Futuro</h2>
+          <p className="text-gray-400 mb-8 text-base leading-relaxed max-w-xl mx-auto">
             Ingeniería, innovación y confianza para cada proyecto. Contáctenos y reciba una cotización sin compromiso.
           </p>
-          <Link href="/contacto" className="inline-flex items-center gap-2 bg-gray-900 text-white font-bold px-8 py-3 rounded-lg hover:bg-gray-800 transition-colors">
+          <Link href="/contacto" className="inline-flex items-center gap-2 bg-amber-400 text-gray-900 font-bold px-8 py-3.5 rounded-lg hover:bg-amber-300 transition-all shadow-lg shadow-amber-400/20">
             Solicitar cotización
           </Link>
         </ScrollReveal>
