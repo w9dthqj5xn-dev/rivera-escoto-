@@ -2,7 +2,12 @@ import { PrismaClient } from "@/app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 function createPrismaClient() {
-  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+  const connectionString = process.env.DATABASE_URL!;
+  const isProduction = process.env.NODE_ENV === "production";
+  const adapter = new PrismaPg({
+    connectionString,
+    ...(isProduction && { ssl: { rejectUnauthorized: false } }),
+  });
   return new PrismaClient({ adapter });
 }
 
