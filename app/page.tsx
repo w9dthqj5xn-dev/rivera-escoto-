@@ -3,19 +3,22 @@ import ServiciosSection from "@/components/ServiciosSection";
 import PublicacionCard from "@/components/PublicacionCard";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { db, docToData } from "@/lib/firebase";
+import type { Publicacion } from "@/lib/types";
 
 export const revalidate = 3600;
 
 export default async function HomePage() {
-  let publicaciones: Awaited<ReturnType<typeof prisma.publicacion.findMany>> = [];
+  let publicaciones: Publicacion[] = [];
 
   try {
-    publicaciones = await prisma.publicacion.findMany({
-      where: { publicado: true },
-      orderBy: { creadoEn: "desc" },
-      take: 3,
-    });
+    const snap = await db
+      .collection("publicaciones")
+      .where("publicado", "==", true)
+      .orderBy("creadoEn", "desc")
+      .limit(3)
+      .get();
+    publicaciones = snap.docs.map((d) => docToData<Publicacion>(d));
   } catch {
     // La DB puede no estar configurada aún
   }

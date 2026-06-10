@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { db, docToData } from "@/lib/firebase";
 import { z } from "zod";
+import type { Publicacion } from "@/lib/types";
 
 const schema = z.object({
   titulo: z.string().min(1),
@@ -14,10 +15,12 @@ const schema = z.object({
 
 export async function GET() {
   try {
-    const publicaciones = await prisma.publicacion.findMany({
-      where: { publicado: true },
-      orderBy: { creadoEn: "desc" },
-    });
+    const snap = await db
+      .collection("publicaciones")
+      .where("publicado", "==", true)
+      .orderBy("creadoEn", "desc")
+      .get();
+    const publicaciones = snap.docs.map((d) => docToData<Publicacion>(d));
     return NextResponse.json(publicaciones);
   } catch {
     return NextResponse.json({ error: "Error al obtener publicaciones" }, { status: 500 });
@@ -32,17 +35,20 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const data = schema.parse(body);
 
-    const publicacion = await prisma.publicacion.create({
-      data: {
-        titulo: data.titulo,
-        contenido: data.contenido,
-        imagen: data.imagen || null,
-        slug: data.slug,
-        publicado: data.publicado,
-        fuente: "MANUAL",
-      },
+    const ref = await db.collection("publicaciones").add({
+      titulo: data.titulo,
+      contenido: data.contenido ?? null,
+      imagen: data.imagen || null,
+      slug: data.slug,
+      publicado: data.publicado,
+      fuente: "MANUAL",
+      instagramId: null,
+      instagramUrl: null,
+      creadoEn: new Date(),
     });
-    return NextResponse.json(publicacion, { status: 201 });
+
+    const doc = await ref.get();
+    return NextResponse.json(docToData<Publicacion>(doc), { status: 201 });
   } catch (e) {
     if (e instanceof z.ZodError) {
       return NextResponse.json({ error: e.issues }, { status: 400 });

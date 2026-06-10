@@ -1,5 +1,6 @@
 import { requireAdmin } from "@/lib/session";
-import { prisma } from "@/lib/prisma";
+import { db, docToData } from "@/lib/firebase";
+import type { Publicacion } from "@/lib/types";
 import Link from "next/link";
 import AdminPublicacionesTable from "@/components/admin/AdminPublicacionesTable";
 import { Plus, ArrowLeft } from "lucide-react";
@@ -7,12 +8,14 @@ import { Plus, ArrowLeft } from "lucide-react";
 export default async function AdminPublicacionesPage() {
   await requireAdmin();
 
-  let publicaciones: Awaited<ReturnType<typeof prisma.publicacion.findMany>> = [];
+  let publicaciones: Publicacion[] = [];
 
   try {
-    publicaciones = await prisma.publicacion.findMany({
-      orderBy: { creadoEn: "desc" },
-    });
+    const snap = await db
+      .collection("publicaciones")
+      .orderBy("creadoEn", "desc")
+      .get();
+    publicaciones = snap.docs.map((d) => docToData<Publicacion>(d));
   } catch {
     // DB no configurada aún
   }

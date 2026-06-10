@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { db, docToData } from "@/lib/firebase";
+import type { Publicacion } from "@/lib/types";
 
 export async function DELETE(
   _req: NextRequest,
@@ -13,7 +14,7 @@ export async function DELETE(
   const { id } = await params;
 
   try {
-    await prisma.publicacion.delete({ where: { id } });
+    await db.collection("publicaciones").doc(id).delete();
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Error al eliminar" }, { status: 500 });
@@ -31,11 +32,10 @@ export async function PATCH(
 
   try {
     const body = await req.json();
-    const publicacion = await prisma.publicacion.update({
-      where: { id },
-      data: body,
-    });
-    return NextResponse.json(publicacion);
+    const ref = db.collection("publicaciones").doc(id);
+    await ref.update(body);
+    const doc = await ref.get();
+    return NextResponse.json(docToData<Publicacion>(doc));
   } catch {
     return NextResponse.json({ error: "Error al actualizar" }, { status: 500 });
   }

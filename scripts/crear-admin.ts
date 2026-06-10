@@ -1,30 +1,47 @@
 /**
  * Script para crear el primer usuario administrador.
- * Uso: npx ts-node scripts/crear-admin.ts
- * O: npx tsx scripts/crear-admin.ts
+ * Uso: npx tsx scripts/crear-admin.ts email@ejemplo.com ContraseñaSegura123! "Nombre Completo"
  */
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "../app/generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import * as admin from "firebase-admin";
+
+admin.initializeApp({
+  credential: admin.credential.cert({
+    projectId: process.env.FIREBASE_PROJECT_ID!,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+  }),
+});
+
+const db = admin.firestore();
 
 async function main() {
-  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
-  const prisma = new PrismaClient({ adapter });
-
   const email = process.argv[2] || "admin@riveraescoto.com";
   const password = process.argv[3] || "Admin1234!";
   const nombre = process.argv[4] || "Administrador";
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const usuario = await prisma.adminUser.upsert({
-    where: { email },
-    update: { password: hashedPassword, nombre },
-    create: { email, password: hashedPassword, nombre },
-  });
+  const existing = await db
+    .collection("adminUsers")
+    .where("email", "==", email)
+    .limit(1)
+    .get();
 
-  console.log(`✓ Usuario admin creado: ${usuario.email}`);
-  await prisma.$disconnect();
+  if (!existing.empty) {
+    await existing.docs[0].ref.update({ password: hashedPassword, nombre });
+    console.log(`✓ Usuario admin actualizado: ${email}`);
+  } else {
+    await db.collection("adminUsers").add({
+      email,
+      password: hashedPassword,
+      nombre,
+      creadoEn: new Date(),
+    });
+    console.log(`✓ Usuario admin creado: ${email}`);
+  }
+
+  await admin.app().delete();
 }
 
 main().catch((e) => {

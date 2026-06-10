@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/firebase";
 import { z } from "zod";
 
 const schema = z.object({
@@ -14,7 +14,12 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const data = schema.parse(body);
 
-    await prisma.contacto.create({ data });
+    await db.collection("contactos").add({
+      ...data,
+      telefono: data.telefono ?? null,
+      leido: false,
+      creadoEn: new Date(),
+    });
 
     return NextResponse.json({ ok: true }, { status: 201 });
   } catch (e) {

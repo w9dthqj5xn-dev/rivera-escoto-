@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/firebase";
 import { obtenerPublicacionesInstagram } from "@/lib/instagram";
 
 export async function POST() {
@@ -20,22 +20,23 @@ export async function POST() {
     for (const post of posts) {
       if (post.media_type === "VIDEO") continue;
 
-      const existente = await prisma.publicacion.findUnique({
-        where: { instagramId: post.id },
-      });
+      const existing = await db
+        .collection("publicaciones")
+        .where("instagramId", "==", post.id)
+        .limit(1)
+        .get();
 
-      if (!existente) {
-        await prisma.publicacion.create({
-          data: {
-            titulo: post.caption?.split("\n")[0]?.substring(0, 100) || "Publicación de Instagram",
-            contenido: post.caption || null,
-            imagen: post.media_url,
-            slug: `instagram-${post.id}`,
-            fuente: "INSTAGRAM",
-            instagramId: post.id,
-            instagramUrl: post.permalink,
-            publicado: true,
-          },
+      if (existing.empty) {
+        await db.collection("publicaciones").add({
+          titulo: post.caption?.split("\n")[0]?.substring(0, 100) || "Publicación de Instagram",
+          contenido: post.caption || null,
+          imagen: post.media_url,
+          slug: `instagram-${post.id}`,
+          fuente: "INSTAGRAM",
+          instagramId: post.id,
+          instagramUrl: post.permalink,
+          publicado: true,
+          creadoEn: new Date(),
         });
         sincronizadas++;
       }
