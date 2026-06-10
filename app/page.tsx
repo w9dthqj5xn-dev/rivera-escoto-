@@ -3,7 +3,7 @@ import ServiciosSection from "@/components/ServiciosSection";
 import PublicacionCard from "@/components/PublicacionCard";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
-import { db, docToData } from "@/lib/firebase";
+import { db, docsToData } from "@/lib/firebase";
 import type { Publicacion } from "@/lib/types";
 
 export const revalidate = 3600;
@@ -18,7 +18,7 @@ export default async function HomePage() {
       .orderBy("creadoEn", "desc")
       .limit(3)
       .get();
-    publicaciones = snap.docs.map((d) => docToData<Publicacion>(d));
+    publicaciones = docsToData<Publicacion>(snap);
   } catch {
     // La DB puede no estar configurada aún
   }

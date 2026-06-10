@@ -3,17 +3,18 @@
  * Uso: npx tsx scripts/crear-admin.ts email@ejemplo.com ContraseñaSegura123! "Nombre Completo"
  */
 import bcrypt from "bcryptjs";
-import * as admin from "firebase-admin";
+import { initializeApp, cert } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 
-admin.initializeApp({
-  credential: admin.credential.cert({
+initializeApp({
+  credential: cert({
     projectId: process.env.FIREBASE_PROJECT_ID!,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
     privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
   }),
 });
 
-const db = admin.firestore();
+const db = getFirestore();
 
 async function main() {
   const email = process.argv[2] || "admin@riveraescoto.com";
@@ -41,7 +42,7 @@ async function main() {
     console.log(`✓ Usuario admin creado: ${email}`);
   }
 
-  await admin.app().delete();
+  await getFirestore().terminate();
 }
 
 main().catch((e) => {

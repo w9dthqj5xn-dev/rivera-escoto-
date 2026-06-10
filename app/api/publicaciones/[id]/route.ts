@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import { db, docToData } from "@/lib/firebase";
 import type { Publicacion } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

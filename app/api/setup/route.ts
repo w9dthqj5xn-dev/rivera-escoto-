@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/firebase";
 
+export const dynamic = "force-dynamic";
+
 // Endpoint de configuración inicial — ELIMINAR después de crear el admin
 export async function POST(req: NextRequest) {
   const setupToken = process.env.SETUP_TOKEN;

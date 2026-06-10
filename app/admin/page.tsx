@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/session";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/firebase";
 import Link from "next/link";
 import { Plus, RefreshCw, MessageSquare, FileText, Zap } from "lucide-react";
 import AdminSignOutButton from "@/components/admin/AdminSignOutButton";
@@ -10,12 +10,16 @@ export default async function AdminPage() {
   let stats = { publicaciones: 0, contactos: 0, instagramPubs: 0 };
 
   try {
-    const [publicaciones, contactos, instagramPubs] = await Promise.all([
-      prisma.publicacion.count({ where: { publicado: true } }),
-      prisma.contacto.count({ where: { leido: false } }),
-      prisma.publicacion.count({ where: { fuente: "INSTAGRAM" } }),
+    const [pubSnap, contactSnap, igSnap] = await Promise.all([
+      db.collection("publicaciones").where("publicado", "==", true).count().get(),
+      db.collection("contactos").where("leido", "==", false).count().get(),
+      db.collection("publicaciones").where("fuente", "==", "INSTAGRAM").count().get(),
     ]);
-    stats = { publicaciones, contactos, instagramPubs };
+    stats = {
+      publicaciones: pubSnap.data().count,
+      contactos: contactSnap.data().count,
+      instagramPubs: igSnap.data().count,
+    };
   } catch {
     // DB no configurada aún
   }

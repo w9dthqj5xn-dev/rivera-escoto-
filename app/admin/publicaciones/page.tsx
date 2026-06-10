@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/session";
-import { db, docToData } from "@/lib/firebase";
+import { db, docsToData } from "@/lib/firebase";
 import type { Publicacion } from "@/lib/types";
 import Link from "next/link";
 import AdminPublicacionesTable from "@/components/admin/AdminPublicacionesTable";
@@ -15,7 +15,7 @@ export default async function AdminPublicacionesPage() {
       .collection("publicaciones")
       .orderBy("creadoEn", "desc")
       .get();
-    publicaciones = snap.docs.map((d) => docToData<Publicacion>(d));
+    publicaciones = docsToData<Publicacion>(snap);
   } catch {
     // DB no configurada aún
   }

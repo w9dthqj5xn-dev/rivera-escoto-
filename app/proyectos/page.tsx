@@ -1,5 +1,6 @@
 import PublicacionCard from "@/components/PublicacionCard";
-import { prisma } from "@/lib/prisma";
+import { db, docsToData } from "@/lib/firebase";
+import type { Publicacion } from "@/lib/types";
 import { Camera } from "lucide-react";
 
 export const revalidate = 3600;
@@ -10,13 +11,15 @@ export const metadata = {
 };
 
 export default async function ProyectosPage() {
-  let publicaciones: Awaited<ReturnType<typeof prisma.publicacion.findMany>> = [];
+  let publicaciones: Publicacion[] = [];
 
   try {
-    publicaciones = await prisma.publicacion.findMany({
-      where: { publicado: true },
-      orderBy: { creadoEn: "desc" },
-    });
+    const snap = await db
+      .collection("publicaciones")
+      .where("publicado", "==", true)
+      .orderBy("creadoEn", "desc")
+      .get();
+    publicaciones = docsToData<Publicacion>(snap);
   } catch {
     // DB no configurada aún
   }

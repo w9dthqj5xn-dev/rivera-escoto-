@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { db, docToData } from "@/lib/firebase";
+import { db, docToData, docsToData } from "@/lib/firebase";
 import { z } from "zod";
+
+export const dynamic = "force-dynamic";
 import type { Publicacion } from "@/lib/types";
 
 const schema = z.object({
@@ -20,7 +22,7 @@ export async function GET() {
       .where("publicado", "==", true)
       .orderBy("creadoEn", "desc")
       .get();
-    const publicaciones = snap.docs.map((d) => docToData<Publicacion>(d));
+    const publicaciones = docsToData<Publicacion>(snap);
     return NextResponse.json(publicaciones);
   } catch {
     return NextResponse.json({ error: "Error al obtener publicaciones" }, { status: 500 });

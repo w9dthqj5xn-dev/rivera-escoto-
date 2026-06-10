@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/firebase";
 import { obtenerPublicacionesInstagram } from "@/lib/instagram";
 
+export const dynamic = "force-dynamic";
+
 export async function POST() {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
