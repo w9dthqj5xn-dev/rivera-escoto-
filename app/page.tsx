@@ -47,7 +47,7 @@ export default async function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {publicaciones.map((pub, index) => (
                 <ScrollReveal key={pub.id} delay={index * 100}>
-                  <PublicacionCard id={pub.id} titulo={pub.titulo} contenido={pub.contenido} imagen={pub.imagen} fuente={pub.fuente} instagramUrl={pub.instagramUrl} creadoEn={pub.creadoEn} />
+                  <PublicacionCard id={pub.id} titulo={pub.titulo} contenido={pub.contenido} imagen={pub.imagen} videoUrl={pub.videoUrl} youtubeUrl={pub.youtubeUrl} fuente={pub.fuente} instagramUrl={pub.instagramUrl} creadoEn={pub.creadoEn} />
                 </ScrollReveal>
               ))}
             </div>

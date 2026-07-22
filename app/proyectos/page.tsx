@@ -1,7 +1,6 @@
 import PublicacionCard from "@/components/PublicacionCard";
 import { db, docsToData } from "@/lib/firebase";
 import type { Publicacion } from "@/lib/types";
-import { Camera } from "lucide-react";
 
 export const revalidate = 3600;
 
@@ -47,6 +46,8 @@ export default async function ProyectosPage() {
                 titulo={pub.titulo}
                 contenido={pub.contenido}
                 imagen={pub.imagen}
+                videoUrl={pub.videoUrl}
+                youtubeUrl={pub.youtubeUrl}
                 fuente={pub.fuente}
                 instagramUrl={pub.instagramUrl}
                 creadoEn={pub.creadoEn}

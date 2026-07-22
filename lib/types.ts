@@ -3,6 +3,8 @@ export interface Publicacion {
   titulo: string;
   contenido?: string | null;
   imagen?: string | null;
+  videoUrl?: string | null;
+  youtubeUrl?: string | null;
   slug: string;
   fuente: "MANUAL" | "INSTAGRAM";
   instagramId?: string | null;

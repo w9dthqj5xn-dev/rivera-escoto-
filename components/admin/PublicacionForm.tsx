@@ -5,10 +5,28 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+const youtubeUrlSchema = z
+  .string()
+  .trim()
+  .refine((value) => {
+    if (!value) return true;
+    try {
+      const url = new URL(value);
+      const host = url.hostname.replace("www.", "").toLowerCase();
+      return host === "youtu.be" || host.endsWith("youtube.com") || host.endsWith("youtube-nocookie.com");
+    } catch {
+      return false;
+    }
+  }, "Debe ser un enlace válido de YouTube")
+  .optional()
+  .or(z.literal(""));
+
 const schema = z.object({
   titulo: z.string().min(1, "El título es requerido"),
   contenido: z.string().optional(),
   imagen: z.string().optional().or(z.literal("")),
+  videoUrl: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
+  youtubeUrl: youtubeUrlSchema,
   slug: z.string().min(1, "El slug es requerido").regex(/^[a-z0-9-]+$/, "Solo letras minúsculas, números y guiones"),
   publicado: z.boolean(),
 });
@@ -144,6 +162,34 @@ export default function PublicacionForm() {
         </div>
 
         {errors.imagen && <p className="text-red-500 text-xs mt-1">{errors.imagen.message}</p>}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Enlace de YouTube (opcional)</label>
+        <input
+          {...register("youtubeUrl")}
+          type="url"
+          placeholder="https://www.youtube.com/watch?v=..."
+          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Acepta enlaces de youtube.com y youtu.be.
+        </p>
+        {errors.youtubeUrl && <p className="text-red-500 text-xs mt-1">{errors.youtubeUrl.message}</p>}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">URL de video directo (opcional)</label>
+        <input
+          {...register("videoUrl")}
+          type="url"
+          placeholder="https://midominio.com/video.mp4"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Usa este campo para videos MP4/WebM alojados fuera de YouTube.
+        </p>
+        {errors.videoUrl && <p className="text-red-500 text-xs mt-1">{errors.videoUrl.message}</p>}
       </div>
 
       <div className="flex items-center gap-3">

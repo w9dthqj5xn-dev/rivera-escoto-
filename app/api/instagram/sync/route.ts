@@ -60,6 +60,8 @@ export async function POST() {
           titulo: post.caption?.split("\n")[0]?.substring(0, 100) || "Publicación de Instagram",
           contenido: post.caption || null,
           imagen: post.media_url,
+          videoUrl: null,
+          youtubeUrl: null,
           slug: `instagram-${post.id}`,
           fuente: "INSTAGRAM",
           instagramId: post.id,

@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Camera, Trash2, Eye, EyeOff } from "lucide-react";
+import { Camera, Trash2, Eye, EyeOff, PlayCircle } from "lucide-react";
 
 interface Pub {
   id: string;
   titulo: string;
   fuente: string;
+  videoUrl?: string | null;
+  youtubeUrl?: string | null;
   publicado: boolean;
   creadoEn: Date | string;
 }
@@ -46,6 +48,7 @@ export default function AdminPublicacionesTable({ publicaciones }: { publicacion
           <tr>
             <th className="text-left px-6 py-3 font-semibold text-gray-600">Título</th>
             <th className="text-left px-4 py-3 font-semibold text-gray-600 hidden sm:table-cell">Fuente</th>
+            <th className="text-left px-4 py-3 font-semibold text-gray-600 hidden md:table-cell">Tipo</th>
             <th className="text-left px-4 py-3 font-semibold text-gray-600 hidden md:table-cell">Fecha</th>
             <th className="text-left px-4 py-3 font-semibold text-gray-600">Estado</th>
             <th className="px-4 py-3"></th>
@@ -62,6 +65,15 @@ export default function AdminPublicacionesTable({ publicaciones }: { publicacion
                   </span>
                 ) : (
                   <span className="text-xs text-gray-500">Manual</span>
+                )}
+              </td>
+              <td className="px-4 py-4 hidden md:table-cell">
+                {pub.youtubeUrl || pub.videoUrl ? (
+                  <span className="flex items-center gap-1 text-amber-600 text-xs font-medium">
+                    <PlayCircle size={12} /> Video
+                  </span>
+                ) : (
+                  <span className="text-xs text-gray-500">Imagen/Texto</span>
                 )}
               </td>
               <td className="px-4 py-4 text-gray-400 text-xs hidden md:table-cell">

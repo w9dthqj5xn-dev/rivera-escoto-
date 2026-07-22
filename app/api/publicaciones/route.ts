@@ -11,9 +11,20 @@ const schema = z.object({
   titulo: z.string().min(1),
   contenido: z.string().optional(),
   imagen: z.string().optional().or(z.literal("")),
+  videoUrl: z.string().url().optional().or(z.literal("")),
+  youtubeUrl: z.string().url().optional().or(z.literal("")),
   slug: z.string().min(1),
   publicado: z.boolean().default(true),
 });
+
+function isYouTubeUrl(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.replace("www.", "").toLowerCase();
+    return host === "youtu.be" || host.endsWith("youtube.com") || host.endsWith("youtube-nocookie.com");
+  } catch {
+    return false;
+  }
+}
 
 export async function GET() {
   if (!db) {
@@ -43,11 +54,23 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const data = schema.parse(body);
+    const imageValue = data.imagen || null;
+    const rawVideoValue = data.videoUrl || null;
+    const rawYoutubeValue = data.youtubeUrl || null;
+
+    const inferredYoutubeUrl = rawYoutubeValue
+      || (rawVideoValue && isYouTubeUrl(rawVideoValue) ? rawVideoValue : null)
+      || (imageValue && isYouTubeUrl(imageValue) ? imageValue : null);
+
+    const normalizedVideoUrl = rawVideoValue && !isYouTubeUrl(rawVideoValue) ? rawVideoValue : null;
+    const normalizedImageUrl = imageValue && !isYouTubeUrl(imageValue) ? imageValue : null;
 
     const ref = await db.collection("publicaciones").add({
       titulo: data.titulo,
       contenido: data.contenido ?? null,
-      imagen: data.imagen || null,
+      imagen: normalizedImageUrl,
+      videoUrl: normalizedVideoUrl,
+      youtubeUrl: inferredYoutubeUrl,
       slug: data.slug,
       publicado: data.publicado,
       fuente: "MANUAL",
