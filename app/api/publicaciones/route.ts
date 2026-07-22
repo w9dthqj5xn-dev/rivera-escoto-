@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db, docToData, docsToData } from "@/lib/firebase";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 export const dynamic = "force-dynamic";
 import type { Publicacion } from "@/lib/types";
@@ -78,6 +79,10 @@ export async function POST(req: NextRequest) {
       instagramUrl: null,
       creadoEn: new Date(),
     });
+
+    revalidatePath("/");
+    revalidatePath("/proyectos");
+    revalidatePath("/admin/publicaciones");
 
     const doc = await ref.get();
     return NextResponse.json(docToData<Publicacion>(doc), { status: 201 });

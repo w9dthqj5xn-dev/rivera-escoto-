@@ -87,7 +87,8 @@ export default function PublicacionCard({
 
   const youtubeCandidateUrl = [youtubeUrl, videoUrl, imagen].find((value) => typeof value === "string" && isYouTubeUrl(value));
   const youtubeEmbedUrl = youtubeCandidateUrl ? getYouTubeEmbedUrl(youtubeCandidateUrl) : null;
-  const showVideo = Boolean(youtubeEmbedUrl || videoUrl);
+  const directVideoUrl = videoUrl && !isYouTubeUrl(videoUrl) ? videoUrl : null;
+  const showVideo = Boolean(youtubeEmbedUrl || directVideoUrl);
 
   return (
     <article className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:border-gray-200 transition-all duration-300 group flex flex-col h-full">
@@ -104,10 +105,10 @@ export default function PublicacionCard({
         </div>
       )}
 
-      {!youtubeEmbedUrl && videoUrl && (
+      {!youtubeEmbedUrl && directVideoUrl && (
         <div className="relative w-full bg-black shrink-0 aspect-video">
           <video controls className="h-full w-full" preload="metadata">
-            <source src={videoUrl} />
+            <source src={directVideoUrl} />
             Tu navegador no soporta la reproducción de video.
           </video>
         </div>

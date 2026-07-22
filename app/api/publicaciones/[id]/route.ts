@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db, docToData } from "@/lib/firebase";
 import type { Publicacion } from "@/lib/types";
+import { revalidatePath } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,9 @@ export async function DELETE(
 
   try {
     await db.collection("publicaciones").doc(id).delete();
+    revalidatePath("/");
+    revalidatePath("/proyectos");
+    revalidatePath("/admin/publicaciones");
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Error al eliminar" }, { status: 500 });
@@ -44,6 +48,9 @@ export async function PATCH(
     const body = await req.json();
     const ref = db.collection("publicaciones").doc(id);
     await ref.update(body);
+    revalidatePath("/");
+    revalidatePath("/proyectos");
+    revalidatePath("/admin/publicaciones");
     const doc = await ref.get();
     return NextResponse.json(docToData<Publicacion>(doc));
   } catch {
