@@ -10,6 +10,10 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  if (!db) {
+    return NextResponse.json({ error: "Base de datos no configurada" }, { status: 500 });
+  }
+
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
@@ -27,6 +31,10 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  if (!db) {
+    return NextResponse.json({ error: "Base de datos no configurada" }, { status: 500 });
+  }
+
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 

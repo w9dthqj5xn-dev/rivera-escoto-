@@ -14,11 +14,10 @@ export default async function HomePage() {
   try {
     const snap = await db
       .collection("publicaciones")
-      .where("publicado", "==", true)
       .orderBy("creadoEn", "desc")
       .limit(3)
       .get();
-    publicaciones = docsToData<Publicacion>(snap);
+    publicaciones = docsToData<Publicacion>(snap).filter((pub) => pub.publicado === true);
   } catch {
     // La DB puede no estar configurada aún
   }

@@ -3,6 +3,7 @@ import { db, docsToData } from "@/lib/firebase";
 import type { Contacto } from "@/lib/types";
 import Link from "next/link";
 import { ArrowLeft, Mail } from "lucide-react";
+import AdminMensajeItem from "@/components/admin/AdminMensajeItem";
 
 export default async function MensajesAdminPage() {
   await requireAdmin();
@@ -37,24 +38,7 @@ export default async function MensajesAdminPage() {
         ) : (
           <div className="space-y-4">
             {mensajes.map((m) => (
-              <div
-                key={m.id}
-                className={`bg-white rounded-xl shadow-sm border p-6 ${!m.leido ? "border-amber-200 bg-amber-50/20" : "border-gray-100"}`}
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <p className="font-bold text-gray-900">{m.nombre}</p>
-                    <p className="text-sm text-gray-500">{m.email}{m.telefono ? ` · ${m.telefono}` : ""}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-400">{new Date(m.creadoEn).toLocaleDateString("es-NI")}</p>
-                    {!m.leido && (
-                      <span className="inline-block mt-1 text-xs bg-amber-400 text-gray-900 font-semibold px-2 py-0.5 rounded-full">Nuevo</span>
-                    )}
-                  </div>
-                </div>
-                <p className="text-gray-700 text-sm leading-relaxed">{m.mensaje}</p>
-              </div>
+              <AdminMensajeItem key={m.id} mensaje={m} />
             ))}
           </div>
         )}

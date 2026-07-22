@@ -16,10 +16,9 @@ export default async function ProyectosPage() {
   try {
     const snap = await db
       .collection("publicaciones")
-      .where("publicado", "==", true)
       .orderBy("creadoEn", "desc")
       .get();
-    publicaciones = docsToData<Publicacion>(snap);
+    publicaciones = docsToData<Publicacion>(snap).filter((pub) => pub.publicado === true);
   } catch {
     // DB no configurada aún
   }
@@ -33,10 +32,6 @@ export default async function ProyectosPage() {
           <p className="text-gray-500 max-w-2xl mx-auto">
             Mantente al día con nuestros proyectos, trabajos realizados y novedades del sector eléctrico.
           </p>
-          <div className="flex items-center justify-center gap-2 mt-4 text-pink-500 text-sm">
-            <Camera size={16} />
-            <span>Publicaciones sincronizadas con Instagram</span>
-          </div>
         </div>
 
         {publicaciones.length === 0 ? (

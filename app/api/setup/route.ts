@@ -6,6 +6,10 @@ export const dynamic = "force-dynamic";
 
 // Endpoint de configuración inicial — ELIMINAR después de crear el admin
 export async function POST(req: NextRequest) {
+  if (!db) {
+    return NextResponse.json({ error: "Base de datos no configurada" }, { status: 500 });
+  }
+
   const setupToken = process.env.SETUP_TOKEN;
   if (!setupToken) {
     return NextResponse.json({ error: "Endpoint deshabilitado" }, { status: 403 });

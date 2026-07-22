@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +8,7 @@ import { z } from "zod";
 const schema = z.object({
   titulo: z.string().min(1, "El título es requerido"),
   contenido: z.string().optional(),
-  imagen: z.string().url("URL inválida").optional().or(z.literal("")),
+  imagen: z.string().optional().or(z.literal("")),
   slug: z.string().min(1, "El slug es requerido").regex(/^[a-z0-9-]+$/, "Solo letras minúsculas, números y guiones"),
   publicado: z.boolean(),
 });
@@ -18,6 +18,8 @@ type FormData = z.infer<typeof schema>;
 export default function PublicacionForm() {
   const router = useRouter();
   const [error, setError] = useState("");
+  const [selectedFileName, setSelectedFileName] = useState("");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const {
     register,
@@ -41,6 +43,20 @@ export default function PublicacionForm() {
       .trim()
       .replace(/\s+/g, "-");
     setValue("slug", slug);
+  };
+
+  const handleImageSelection = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setValue("imagen", result, { shouldDirty: true, shouldValidate: true });
+      setSelectedFileName(file.name);
+      setImagePreview(result);
+    };
+    reader.readAsDataURL(file);
   };
 
   const onSubmit = async (data: FormData) => {
@@ -106,13 +122,27 @@ export default function PublicacionForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">URL de imagen (opcional)</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">URL o archivo de imagen (opcional)</label>
         <input
           {...register("imagen")}
-          type="url"
-          placeholder="https://ejemplo.com/imagen.jpg"
+          type="text"
+          placeholder="Pega una URL o selecciona un archivo"
           className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
         />
+
+        <div className="mt-3 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-3">
+          <label htmlFor="imagen-archivo" className="flex cursor-pointer items-center justify-between text-sm text-gray-700">
+            <span>Seleccionar imagen desde tu dispositivo</span>
+            <span className="font-semibold text-amber-600">Elegir archivo</span>
+          </label>
+          <input id="imagen-archivo" type="file" accept="image/*" onChange={handleImageSelection} className="sr-only" />
+
+          {selectedFileName && <p className="mt-2 text-xs text-gray-500">Archivo seleccionado: {selectedFileName}</p>}
+          {imagePreview && (
+            <img src={imagePreview} alt="Vista previa de la imagen" className="mt-3 h-40 w-full rounded-md object-cover" />
+          )}
+        </div>
+
         {errors.imagen && <p className="text-red-500 text-xs mt-1">{errors.imagen.message}</p>}
       </div>
 

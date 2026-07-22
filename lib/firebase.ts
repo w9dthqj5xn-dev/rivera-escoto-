@@ -5,13 +5,19 @@ import type { DocumentSnapshot, QuerySnapshot, Timestamp } from "firebase-admin/
 if (!getApps().length) {
   const { FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY } = process.env;
   if (FIREBASE_PROJECT_ID && FIREBASE_CLIENT_EMAIL && FIREBASE_PRIVATE_KEY) {
-    initializeApp({
-      credential: cert({
-        projectId: FIREBASE_PROJECT_ID,
-        clientEmail: FIREBASE_CLIENT_EMAIL,
-        privateKey: FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-      }),
-    });
+    try {
+      initializeApp({
+        credential: cert({
+          projectId: FIREBASE_PROJECT_ID,
+          clientEmail: FIREBASE_CLIENT_EMAIL,
+          privateKey: FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+        }),
+      });
+    } catch (error) {
+      // Si la clave está mal formateada o no es válida, no detendremos el build.
+      // Esto permite que el sitio siga desplegando aunque la DB no esté configurada.
+      console.error("Firebase initialization failed:", error);
+    }
   }
 }
 

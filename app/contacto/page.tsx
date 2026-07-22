@@ -24,9 +24,9 @@ export default function ContactoPage() {
               <h2 className="text-xl font-bold text-gray-900 mb-6">Información de contacto</h2>
               <ul className="space-y-5">
                 {[
-                  { icon: Phone, label: "Teléfono", value: "+505 0000-0000" },
-                  { icon: Mail, label: "Email", value: "info@riveraescoto.com" },
-                  { icon: MapPin, label: "Ubicación", value: "Nicaragua" },
+                  { icon: Phone, label: "Teléfono", value: "(809) 508 1903 oficina" },
+                  { icon: Mail, label: "Email", value: "Mrivera@riveraescoto.com" },
+                  { icon: MapPin, label: "Ubicación", value: "Distrito Nacional, Republica Dominicana" },
                   { icon: Clock, label: "Horario", value: "Lun – Vie: 8:00am – 5:00pm" },
                 ].map(({ icon: Icon, label, value }) => (
                   <li key={label} className="flex items-start gap-4">

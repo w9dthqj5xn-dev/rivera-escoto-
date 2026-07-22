@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Zap, Phone, Mail, MapPin, Camera, Globe } from "lucide-react";
+import { Zap, Phone, Mail, MapPin } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -45,36 +45,41 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2.5">
                 <Phone size={15} className="text-amber-400 shrink-0" />
-                <span className="text-gray-500">+505 0000-0000</span>
+                <span className="text-gray-500">809 508 1903 </span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail size={15} className="text-amber-400 shrink-0" />
-                <span className="text-gray-500">info@riveraescoto.com</span>
+                <span className="text-gray-500">Mrivera@riveraescoto.com</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <MapPin size={15} className="text-amber-400 shrink-0 mt-0.5" />
-                <span className="text-gray-500">Nicaragua</span>
+                <span className="text-gray-500">Distrito Nacional, Republica Dominicana</span>
               </li>
             </ul>
             {/* Redes sociales */}
             <div className="flex gap-3 mt-5">
               <a
-                href="https://www.instagram.com/"
+                href="https://www.instagram.com/riveraescoto.asocs?igsh=MTVoYnY4ZTIxbnV4ag=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 hover:bg-amber-400/10 hover:text-amber-400 transition-all"
                 aria-label="Instagram"
               >
-                <Camera size={17} />
-              </a>
-              <a
-                href="https://www.facebook.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 hover:bg-amber-400/10 hover:text-amber-400 transition-all"
-                aria-label="Facebook"
-              >
-                <Globe size={17} />
+                <svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-current"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M17.5 6.5L17.51 6.5" />
+                </svg>
               </a>
             </div>
           </div>

@@ -2,15 +2,16 @@
  * Script para crear el primer usuario administrador.
  * Uso: npx tsx scripts/crear-admin.ts email@ejemplo.com ContraseñaSegura123! "Nombre Completo"
  */
+import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { initializeApp, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 
 initializeApp({
   credential: cert({
-    projectId: process.env.FIREBASE_PROJECT_ID!,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    project_id: process.env.FIREBASE_PROJECT_ID!,
+    client_email: process.env.FIREBASE_CLIENT_EMAIL!,
+    private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
   }),
 });
 

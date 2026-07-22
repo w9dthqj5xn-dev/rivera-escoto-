@@ -10,19 +10,22 @@ import type { Publicacion } from "@/lib/types";
 const schema = z.object({
   titulo: z.string().min(1),
   contenido: z.string().optional(),
-  imagen: z.string().url().optional().or(z.literal("")),
+  imagen: z.string().optional().or(z.literal("")),
   slug: z.string().min(1),
   publicado: z.boolean().default(true),
 });
 
 export async function GET() {
+  if (!db) {
+    return NextResponse.json({ error: "Base de datos no configurada" }, { status: 500 });
+  }
+
   try {
     const snap = await db
       .collection("publicaciones")
-      .where("publicado", "==", true)
       .orderBy("creadoEn", "desc")
       .get();
-    const publicaciones = docsToData<Publicacion>(snap);
+    const publicaciones = docsToData<Publicacion>(snap).filter((pub) => pub.publicado === true);
     return NextResponse.json(publicaciones);
   } catch {
     return NextResponse.json({ error: "Error al obtener publicaciones" }, { status: 500 });
@@ -30,6 +33,10 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!db) {
+    return NextResponse.json({ error: "Base de datos no configurada" }, { status: 500 });
+  }
+
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 

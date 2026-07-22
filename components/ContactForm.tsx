@@ -33,7 +33,17 @@ export default function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Error al enviar");
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const msg = json?.error || "Error al enviar";
+        throw new Error(typeof msg === "string" ? msg : "Error al enviar");
+      }
+      // If server returned a warning (email not configured), show it but still mark as enviado
+      if (json?.warning) {
+        setError(json.warning);
+      } else {
+        setError("");
+      }
       setEnviado(true);
       reset();
     } catch {
