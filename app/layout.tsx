@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Raleway } from "next/font/google";
 import "./globals.css";
 import LayoutShell from "@/components/LayoutShell";
+import RemoveNetlifyBadge from "@/components/RemoveNetlifyBadge";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,6 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} ${raleway.variable} h-full antialiased`}>
+      <RemoveNetlifyBadge />
       <LayoutShell>{children}</LayoutShell>
     </html>
   );
