@@ -29,6 +29,32 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} ${raleway.variable} h-full antialiased`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Remover badge de Netlify agresivamente
+                const style = document.createElement('style');
+                style.innerHTML = \`
+                  a[href*="netlify.com"] { display: none !important; }
+                  [data-netlify] { display: none !important; }
+                \`;
+                document.head.appendChild(style);
+                
+                // Observer
+                function removeBadge() {
+                  document.querySelectorAll('a[href*="netlify.com"]').forEach(el => el.remove());
+                  document.querySelectorAll('[data-netlify]').forEach(el => el.remove());
+                }
+                
+                removeBadge();
+                setInterval(removeBadge, 100);
+              })();
+            `,
+          }}
+        />
+      </head>
       <RemoveNetlifyBadge />
       <LayoutShell>{children}</LayoutShell>
     </html>
