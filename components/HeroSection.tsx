@@ -52,8 +52,8 @@ export default function HeroSection() {
             <div className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-800/80">
               {[
                 { icon: Shield, label: "Instalaciones seguras", value: "100%" },
-                { icon: Clock, label: "Años de experiencia", value: "10+" },
-                { icon: Award, label: "Proyectos completados", value: "500+" },
+                { icon: Clock, label: "Años de experiencia", value: "30" },
+                { icon: Award, label: "Proyectos completados", value: "100" },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="text-center group">
                   <Icon className="text-amber-400 mx-auto mb-2 group-hover:scale-110 transition-transform" size={21} />

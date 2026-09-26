@@ -24,7 +24,7 @@ export default function ContactoPage() {
               <h2 className="text-xl font-bold text-gray-900 mb-6">Información de contacto</h2>
               <ul className="space-y-5">
                 {[
-                  { icon: Phone, label: "Teléfono", value: "(809) 508 1903 oficina" },
+                  { icon: Phone, label: "Teléfono", value: "(809) 274-8493" },
                   { icon: Mail, label: "Email", value: "Mrivera@riveraescoto.com" },
                   { icon: MapPin, label: "Ubicación", value: "Distrito Nacional, Republica Dominicana" },
                   { icon: Clock, label: "Horario", value: "Lun – Vie: 8:00am – 5:00pm" },
